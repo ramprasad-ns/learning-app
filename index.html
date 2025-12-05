@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expert Prep App & Admin v10</title>
+    <title>Expert Prep App & Admin v11</title>
     
     <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -72,7 +72,8 @@
             Bell: <g><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></g>,
             Check: <g><polyline points="20 6 9 17 4 12"/></g>,
             HelpCircle: <g><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></g>,
-            Copy: <g><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></g>
+            Copy: <g><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></g>,
+            Key: <g><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></g>
         };
 
         const I = (props) => <Icon path={Icons[props.n]} {...props} />;
@@ -83,7 +84,7 @@
         const LS_ACTIVE_USER = 'active_user';
         const TIME_PER_QUESTION = 60; // 1 Minute per question
 
-        const sampleCourses = [{ id: "ajo-sample", title: "Adobe Journey Optimizer", description: "Expert Certification Prep (Default)", modules: [{ id: 1, title: "Module 01: Basics", questions: [{ id: 101, question: "What is AJO?", options: ["CMS", "Journey Tool", "Email Client", "Game"], answer: 1, explanation: "It orchestrates journeys." }] }] }];
+        const sampleCourses = [{ id: "ajo-sample", title: "Adobe Journey Optimizer", description: "Expert Certification Prep (Default)", code: "", modules: [{ id: 1, title: "Module 01: Basics", questions: [{ id: 101, question: "What is AJO?", options: ["CMS", "Journey Tool", "Email Client", "Game"], answer: 1, explanation: "It orchestrates journeys." }] }] }];
 
         // --- UTILS ---
         const formatTime = (seconds) => {
@@ -287,6 +288,15 @@
                 notify("New course created! Upload JSON to add content.");
             };
 
+            const updateCourseCode = (cId, code) => {
+                const newCourses = [...courses];
+                const idx = newCourses.findIndex(c => c.id === cId);
+                if (idx !== -1) {
+                    newCourses[idx].code = code;
+                    setCourses(newCourses);
+                }
+            };
+
             const deleteCourse = (id) => {
                 if (confirm("Delete this course? This cannot be undone.")) {
                     setCourses(courses.filter(c => c.id !== id));
@@ -305,61 +315,6 @@
 
             const deleteUser = (idx) => { if (confirm("Delete user?")) { const newU = [...users]; newU.splice(idx, 1); setUsers(newU); notify("User removed."); } };
 
-            const toggleMode = (uIdx, cId, mode) => {
-                const newUsers = [...users];
-                const user = newUsers[uIdx];
-                let accessList = Array.isArray(user.access) ? user.access : [];
-                const existingAccessIndex = accessList.findIndex(a => a.courseId === cId);
-                
-                if (existingAccessIndex > -1) {
-                    let modes = accessList[existingAccessIndex].modes || [];
-                    if (modes.includes(mode)) {
-                        modes = modes.filter(m => m !== mode);
-                    } else {
-                        modes.push(mode);
-                    }
-                    if (modes.length === 0) {
-                        accessList.splice(existingAccessIndex, 1);
-                    } else {
-                        // V8: If adding quiz mode, clear request
-                        if (mode === 'quiz' && user.requests) {
-                             user.requests = user.requests.filter(r => r !== cId);
-                        }
-                        accessList[existingAccessIndex] = { ...accessList[existingAccessIndex], modes };
-                    }
-                } else {
-                    // V8: If adding quiz mode, clear request
-                    if (mode === 'quiz' && user.requests) {
-                        user.requests = user.requests.filter(r => r !== cId);
-                    }
-                    accessList.push({ courseId: cId, modes: [mode] });
-                }
-                user.access = accessList;
-                setUsers(newUsers);
-            };
-
-            const toggleQuickAssign = (uIdx, cId) => {
-                const newUsers = [...users];
-                const user = newUsers[uIdx];
-                const accessList = Array.isArray(user.access) ? user.access : [];
-                const idx = accessList.findIndex(a => a.courseId === cId);
-                
-                if (idx > -1) {
-                    accessList.splice(idx, 1);
-                } else {
-                    // If granting access, also clear any pending requests for this course
-                    if(user.requests) user.requests = user.requests.filter(r => r !== cId);
-                    accessList.push({ courseId: cId, modes: ['study', 'quiz'] });
-                }
-                user.access = accessList;
-                setUsers(newUsers);
-            };
-
-            const approveRequest = (uIdx, cId) => {
-                toggleMode(uIdx, cId, 'quiz');
-                notify("Request approved! Quiz access granted.");
-            };
-
             return (
                 <div className="flex h-screen bg-slate-100 overflow-hidden">
                     {/* NOTIFICATION TOAST */}
@@ -369,7 +324,7 @@
                     {showPromptModal && (
                         <Modal title="AI Content Generation Prompt" onClose={() => setShowPromptModal(false)}>
                             <div className="space-y-4">
-                                <p className="text-sm text-slate-500">Copy this prompt and paste it into Gemini, ChatGPT, or Claude along with your source content link/text. It will generate the exact JSON format needed.</p>
+                                <p className="text-sm text-slate-500">Copy this prompt and paste it into Gemini, ChatGPT, or Claude along with your source content link/text.</p>
                                 <div className="bg-slate-900 text-slate-100 p-4 rounded-lg text-xs font-mono whitespace-pre-wrap overflow-x-auto">
 {`Extract the key learning points from the provided content/link and structure it into a valid JSON Array of Modules for a learning app.
 
@@ -431,7 +386,7 @@ Structure Requirements:
                                 <div className="p-4 bg-slate-50 rounded border border-slate-200">
                                     <p className="text-sm text-slate-500"><strong>Description:</strong> {viewingCourse.description}</p>
                                     <p className="text-sm text-slate-500"><strong>ID:</strong> {viewingCourse.id}</p>
-                                    <p className="text-sm text-slate-500"><strong>Total Modules:</strong> {viewingCourse.modules.length}</p>
+                                    <p className="text-sm text-slate-500"><strong>Access Code:</strong> {viewingCourse.code || "None"}</p>
                                 </div>
                                 <h4 className="font-bold text-slate-800 border-b pb-2 flex justify-between items-center">
                                     <span>Module List</span>
@@ -455,29 +410,6 @@ Structure Requirements:
                                         ))}
                                     </div>
                                 )}
-                            </div>
-                        </Modal>
-                    )}
-
-                    {/* MODAL: QUICK ASSIGN USERS */}
-                    {assigningCourse && (
-                        <Modal title={`Quick Assign: ${assigningCourse.title}`} onClose={() => setAssigningCourse(null)}>
-                            <p className="text-sm text-slate-500 mb-4">Quickly toggle <strong>Full Access</strong> (Study & Quiz) for users.</p>
-                            <div className="grid gap-2">
-                                {users.length === 0 ? <p className="text-slate-400 italic">No users created yet.</p> : users.map((u, idx) => {
-                                    const hasAccess = u.access?.some(a => a.courseId === assigningCourse.id);
-                                    return (
-                                        <label key={idx} className={`flex items-center justify-between p-3 rounded border cursor-pointer transition-colors ${hasAccess ? 'bg-blue-50 border-blue-300' : 'bg-white border-slate-200 hover:bg-slate-50'}`}>
-                                            <div className="flex items-center gap-3">
-                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${hasAccess ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-600'}`}>
-                                                    {u.name.charAt(0).toUpperCase()}
-                                                </div>
-                                                <span className="font-medium">{u.name}</span>
-                                            </div>
-                                            <input type="checkbox" checked={hasAccess} onChange={() => toggleQuickAssign(idx, assigningCourse.id)} className="w-5 h-5 accent-blue-600"/>
-                                        </label>
-                                    );
-                                })}
                             </div>
                         </Modal>
                     )}
@@ -529,14 +461,22 @@ Structure Requirements:
                                         <div key={c.id} className="bg-white p-4 rounded-lg shadow-sm border border-slate-200 flex justify-between items-center hover:border-blue-300 transition-colors">
                                             <div>
                                                 <h3 className="font-bold text-lg">{c.title}</h3>
-                                                <div className="flex items-center gap-4 text-sm text-slate-500">
+                                                <div className="flex items-center gap-4 text-sm text-slate-500 mb-2">
                                                     <span>ID: <code className="bg-slate-100 px-1 rounded text-xs">{c.id}</code></span>
                                                     <span className="flex items-center gap-1"><I n="Library" size={14}/> {c.modules ? c.modules.length : 0} Modules</span>
+                                                </div>
+                                                <div className="flex items-center gap-2 text-xs">
+                                                    <I n="Key" size={14} className="text-slate-400"/>
+                                                    <input 
+                                                        value={c.code || ''} 
+                                                        onChange={(e) => updateCourseCode(c.id, e.target.value)} 
+                                                        placeholder="Set Access Code (Optional)" 
+                                                        className="border-b border-slate-200 focus:border-blue-500 outline-none text-slate-600 w-40 bg-transparent"
+                                                    />
                                                 </div>
                                             </div>
                                             <div className="flex gap-2 items-center">
                                                 <button onClick={() => setViewingCourse(c)} className="text-slate-600 hover:bg-slate-100 p-2 rounded-full" title="Inspect Content"><I n="Eye"/></button>
-                                                <button onClick={() => setAssigningCourse(c)} className="text-emerald-600 hover:bg-emerald-50 p-2 rounded-full" title="Quick Assign Users"><I n="UserPlus"/></button>
                                                 <div className="w-px h-6 bg-slate-200 mx-1"></div>
                                                 <button onClick={() => triggerSingleImport(c.id)} className="text-blue-600 hover:bg-blue-50 px-3 py-1 rounded flex items-center gap-2 text-sm border border-blue-200" title="Update JSON for this course"><I n="UpdateDoc" size={16}/> Update</button>
                                                 <button onClick={() => deleteCourse(c.id)} className="text-red-500 hover:bg-red-50 p-2 rounded" title="Delete"><I n="Trash"/></button>
@@ -550,58 +490,22 @@ Structure Requirements:
 
                         {activeTab === 'users' && (
                             <div className="max-w-4xl mx-auto space-y-8">
-                                <h2 className="text-2xl font-bold text-slate-800 mb-6">User Access Management</h2>
-                                <form onSubmit={addUser} className="mb-8 flex gap-2">
-                                    <input value={newUserName} onChange={e => setNewUserName(e.target.value)} placeholder="New user name..." className="flex-1 p-3 border rounded shadow-sm" />
-                                    <button type="submit" className="bg-green-600 text-white px-6 rounded font-bold hover:bg-green-700">Add User</button>
-                                </form>
+                                <h2 className="text-2xl font-bold text-slate-800 mb-6">Registered Users</h2>
+                                <p className="text-sm text-slate-500 mb-6">These accounts are stored locally on this device. When sharing the app, students will create their own local accounts.</p>
                                 <div className="space-y-6">
                                     {users.map((u, idx) => (
-                                        <div key={idx} className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                                            <div className="flex justify-between items-center mb-4 border-b pb-2">
-                                                <div className="flex items-center gap-2">
-                                                    <h3 className="font-bold text-lg flex items-center gap-2"><I n="User" size={20}/> {u.name}</h3>
-                                                    {u.requests && u.requests.length > 0 && <span className="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded font-bold flex items-center gap-1"><I n="Bell" size={12}/> Needs Approval</span>}
+                                        <div key={idx} className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center">
+                                            <div className="flex items-center gap-2">
+                                                <div className="bg-slate-100 p-2 rounded-full"><I n="User" size={20}/></div>
+                                                <div>
+                                                    <h3 className="font-bold text-lg">{u.name}</h3>
+                                                    <p className="text-xs text-slate-400">Local Account</p>
                                                 </div>
-                                                <button onClick={() => deleteUser(idx)} className="text-red-500 text-sm hover:underline">Remove User</button>
                                             </div>
-                                            <p className="text-xs font-bold text-slate-400 uppercase mb-2">Access Permissions:</p>
-                                            <div className="grid grid-cols-1 gap-2">
-                                                {courses.map(c => {
-                                                    const accessObj = u.access?.find(a => a.courseId === c.id) || {};
-                                                    const modes = accessObj.modes || [];
-                                                    const hasStudy = modes.includes('study');
-                                                    const hasQuiz = modes.includes('quiz');
-                                                    const hasAny = modes.length > 0;
-                                                    const isRequested = u.requests && u.requests.includes(c.id);
-
-                                                    return (
-                                                        <div key={c.id} className={`flex items-center justify-between p-3 rounded border transition-colors ${hasAny ? 'bg-blue-50 border-blue-200' : 'bg-slate-50 border-slate-100'}`}>
-                                                            <div className="flex flex-col">
-                                                                <span className="font-medium text-sm">{c.title}</span>
-                                                                {isRequested && <span className="text-xs text-orange-600 font-bold animate-pulse-slow">Requested Quiz Access</span>}
-                                                            </div>
-                                                            <div className="flex gap-4 items-center">
-                                                                <label className="flex items-center gap-2 cursor-pointer">
-                                                                    <input type="checkbox" checked={hasStudy} onChange={() => toggleMode(idx, c.id, 'study')} className="accent-blue-600"/>
-                                                                    <span className="text-xs font-bold text-slate-600 uppercase">Study</span>
-                                                                </label>
-                                                                {isRequested ? (
-                                                                    <button onClick={() => approveRequest(idx, c.id)} className="bg-green-600 text-white text-xs px-2 py-1 rounded hover:bg-green-700">Approve</button>
-                                                                ) : (
-                                                                    <label className="flex items-center gap-2 cursor-pointer">
-                                                                        <input type="checkbox" checked={hasQuiz} onChange={() => toggleMode(idx, c.id, 'quiz')} className="accent-emerald-600"/>
-                                                                        <span className="text-xs font-bold text-slate-600 uppercase">Quiz</span>
-                                                                    </label>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })}
-                                                {courses.length === 0 && <span className="text-sm text-slate-400 italic">No courses available.</span>}
-                                            </div>
+                                            <button onClick={() => deleteUser(idx)} className="text-red-500 text-sm hover:underline">Remove User</button>
                                         </div>
                                     ))}
+                                    {users.length === 0 && <p className="text-slate-500">No users registered on this device.</p>}
                                 </div>
                             </div>
                         )}
@@ -628,29 +532,20 @@ Structure Requirements:
             const [score, setScore] = useState(0);
             const [history, setHistory] = useState([]);
             const [sidebarOpen, setSidebarOpen] = useState(true);
-            const [timer, setTimer] = useState(0); // This timer counts down
-            const [timeSpent, setTimeSpent] = useState(0); // Actual time spent on the quiz
+            const [timer, setTimer] = useState(0);
+            const [timeSpent, setTimeSpent] = useState(0);
             const [timerActive, setTimerActive] = useState(false);
+            
+            // V11: Unlock Modal State
+            const [unlockModalCourse, setUnlockModalCourse] = useState(null);
+            const [unlockCodeInput, setUnlockCodeInput] = useState("");
 
             useEffect(() => {
                 try {
                     const loadedCourses = JSON.parse(localStorage.getItem(LS_COURSES)) || sampleCourses;
-                    let loadedUsersRaw = JSON.parse(localStorage.getItem(LS_USERS)) || [];
+                    let loadedUsers = JSON.parse(localStorage.getItem(LS_USERS)) || [];
+                    if (!Array.isArray(loadedUsers)) loadedUsers = [];
                     
-                    if (!Array.isArray(loadedUsersRaw)) loadedUsersRaw = [];
-                    if (!Array.isArray(loadedCourses)) loadedCourses = sampleCourses;
-
-                    // MIGRATION SCRIPT
-                    const loadedUsers = loadedUsersRaw.map(u => {
-                        if (u.access && u.access.length > 0 && typeof u.access[0] === 'string') {
-                            return {
-                                ...u,
-                                access: u.access.map(cid => ({ courseId: cid, modes: ['study', 'quiz'] }))
-                            };
-                        }
-                        return u;
-                    });
-
                     setCourses(loadedCourses);
                     setUsers(loadedUsers);
 
@@ -673,18 +568,16 @@ Structure Requirements:
             useEffect(() => { localStorage.setItem(LS_USERS, JSON.stringify(users)); }, [users]);
             useEffect(() => { if (user && !isAdmin) { const h = localStorage.getItem(`prep_history_${user.name}`); setHistory(h ? JSON.parse(h) : []); } }, [user, isAdmin]);
 
-            // Timer Logic
             useEffect(() => {
                 let interval;
                 if (timerActive) {
                     interval = setInterval(() => {
                         setTimer(t => {
                             if (t <= 1) {
-                                // Auto-submit when time runs out
                                 clearInterval(interval);
                                 setTimerActive(false);
                                 setShowResult(true);
-                                saveResult(score, activeModule?.questions.length, timeSpent + 1); // Pass the final time
+                                saveResult(score, activeModule?.questions.length, timeSpent + 1);
                                 return 0;
                             }
                             return t - 1;
@@ -695,39 +588,47 @@ Structure Requirements:
                 return () => clearInterval(interval);
             }, [timerActive, score, activeModule, timeSpent]); 
 
-            const visibleCourses = isAdmin ? courses : courses.filter(c => {
-                const access = user?.access?.find(a => a.courseId === c.id);
-                return access && access.modes && access.modes.length > 0;
-            });
+            const visibleCourses = courses; // Everyone can see all imported courses
 
             const activeCourse = courses.find(c => c.id === activeCourseId);
             const activeModule = activeCourse?.modules.find(m => m.id === activeModuleId);
             const currentQuestion = activeModule?.questions[currentQuestionIndex];
 
-            const currentPermissions = user?.access?.find(a => a.courseId === activeCourseId)?.modes || [];
-            const canStudy = isAdmin || currentPermissions.includes('study');
-            const canQuiz = isAdmin || currentPermissions.includes('quiz');
+            // V11: Permission Logic (Local)
+            const getPermissions = (cId) => {
+                if (isAdmin) return { canStudy: true, canQuiz: true };
+                // By default, everyone has STUDY access to imported courses
+                // Quiz access depends on if course has a code, and if user has entered it
+                const course = courses.find(c => c.id === cId);
+                const userAccess = user?.unlockedCourses || [];
+                
+                const canStudy = true;
+                const canQuiz = !course?.code || userAccess.includes(cId);
+                
+                return { canStudy, canQuiz };
+            };
 
-            // --- V8 NEW: Request Logic ---
-            const requestQuizAccess = () => {
-                 if (user.requests && user.requests.includes(activeCourseId)) {
-                     alert("Request already sent. Pending Admin approval.");
-                     return;
-                 }
-                 const updatedUsers = users.map(u => {
-                     if (u.name === user.name) {
-                         const currentRequests = u.requests || [];
-                         return { ...u, requests: [...currentRequests, activeCourseId] };
-                     }
-                     return u;
-                 });
-                 setUsers(updatedUsers);
-                 setUser(updatedUsers.find(u => u.name === user.name)); // Update local user state
-                 alert("Request sent to Admin!");
+            const unlockQuiz = () => {
+                if (unlockCodeInput === unlockModalCourse.code) {
+                    // Success
+                    const updatedUsers = users.map(u => {
+                        if (u.name === user.name) {
+                            const unlocked = u.unlockedCourses || [];
+                            return { ...u, unlockedCourses: [...unlocked, unlockModalCourse.id] };
+                        }
+                        return u;
+                    });
+                    setUsers(updatedUsers);
+                    setUser(updatedUsers.find(u => u.name === user.name));
+                    setUnlockModalCourse(null);
+                    setUnlockCodeInput("");
+                    alert("Access Granted! Quiz Mode Unlocked.");
+                } else {
+                    alert("Incorrect Access Code.");
+                }
             };
 
             const login = (name, pass) => {
-                // Obfuscated admin check
                 if (btoa(name.toLowerCase()) === 'YWRtaW4=' && btoa(pass) === 'YWRtaW4=') { 
                     setUser('Admin'); 
                     setIsAdmin(true); 
@@ -736,8 +637,20 @@ Structure Requirements:
                 else {
                     const found = users.find(u => u.name.toLowerCase() === name.toLowerCase());
                     if (found) { setUser(found); setIsAdmin(false); localStorage.setItem(LS_ACTIVE_USER, found.name); } 
-                    else alert("User not found or incorrect access.");
+                    else alert("User not found. Please create an account.");
                 }
+            };
+
+            const signup = (name) => {
+                if (!name.trim()) return;
+                if (name.toLowerCase() === 'admin') { alert("Cannot use reserved name."); return; }
+                if (users.find(u => u.name.toLowerCase() === name.toLowerCase())) { alert("User already exists. Please login."); return; }
+                
+                const newUser = { name: name.trim(), unlockedCourses: [] };
+                const newUsers = [...users, newUser];
+                setUsers(newUsers);
+                setUser(newUser);
+                localStorage.setItem(LS_ACTIVE_USER, newUser.name);
             };
 
             const logout = () => { setUser(null); setIsAdmin(false); setActiveCourseId(null); setActiveModuleId(null); localStorage.removeItem(LS_ACTIVE_USER); };
@@ -773,8 +686,11 @@ Structure Requirements:
             };
 
             const startModule = (mode) => {
-                if (mode === 'study' && !canStudy) { alert("Access Denied: Study Mode is disabled for you."); return; }
-                if (mode === 'quiz' && !canQuiz) { alert("Access Denied: Quiz Mode is disabled for you."); return; }
+                const perms = getPermissions(activeCourseId);
+                if (mode === 'quiz' && !perms.canQuiz) { 
+                    setUnlockModalCourse(activeCourse); // Open Unlock Modal
+                    return; 
+                }
 
                 setViewMode(mode);
                 setCurrentQuestionIndex(0);
@@ -802,7 +718,7 @@ Structure Requirements:
 
             if (!user) return (
                 <div>
-                    <LoginScreen onLogin={login} />
+                    <LoginScreen onLogin={login} onSignup={signup} />
                     <button onClick={resetAppData} className="fixed bottom-4 right-4 text-xs text-slate-300 hover:text-red-500">Reset App Data</button>
                     <div className="fixed bottom-10 w-full text-center p-4 text-xs text-slate-400">
                         &copy; {new Date().getFullYear()} Ramprasad NS. All rights reserved.
@@ -813,9 +729,26 @@ Structure Requirements:
             if (isAdmin) return <AdminPanel courses={courses} setCourses={setCourses} users={users} setUsers={setUsers} onLogout={logout} />;
 
             const progress = activeModule ? ((currentQuestionIndex + (showResult ? 1 : 0)) / activeModule.questions.length) * 100 : 0;
+            const perms = activeCourseId ? getPermissions(activeCourseId) : {};
 
             return (
                 <div className="flex h-screen bg-slate-50 font-sans text-slate-800 overflow-hidden">
+                    {/* UNLOCK MODAL */}
+                    {unlockModalCourse && (
+                        <Modal title="Unlock Quiz Access" onClose={() => setUnlockModalCourse(null)}>
+                            <div className="space-y-4">
+                                <p className="text-sm text-slate-600">The Quiz Mode for <strong>{unlockModalCourse.title}</strong> is protected. Please enter the access code provided by your instructor.</p>
+                                <input 
+                                    value={unlockCodeInput} 
+                                    onChange={(e) => setUnlockCodeInput(e.target.value)} 
+                                    placeholder="Enter Access Code" 
+                                    className="w-full p-3 border rounded font-mono text-center tracking-widest text-lg uppercase"
+                                />
+                                <button onClick={unlockQuiz} className="w-full bg-emerald-600 text-white py-3 rounded font-bold hover:bg-emerald-700">Unlock</button>
+                            </div>
+                        </Modal>
+                    )}
+
                     <div className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 transform transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 flex flex-col`}>
                         <div className="p-5 border-b border-slate-100 bg-slate-900 text-white shrink-0">
                             <div className="flex justify-between items-start">
@@ -825,27 +758,59 @@ Structure Requirements:
                             <button onClick={() => setSidebarOpen(false)} className="md:hidden absolute top-5 right-5 text-white"><I n="X"/></button>
                         </div>
                         <div className="overflow-y-auto flex-1 p-2">
-                            {/* V8 Sidebar: List Courses if no active course, else list modules */}
                             {!activeCourseId ? (
                                 <div>
                                     <div className="px-3 py-2 text-xs font-bold text-slate-400 uppercase">Available Courses</div>
+                                    <div className="mb-4 px-3">
+                                        <button onClick={() => document.getElementById('student-import').click()} className="w-full py-2 border border-dashed border-slate-300 rounded text-xs text-slate-500 hover:border-blue-500 hover:text-blue-500 flex items-center justify-center gap-2">
+                                            <I n="Upload" size={14}/> Import Course JSON
+                                        </button>
+                                        <input 
+                                            id="student-import" 
+                                            type="file" 
+                                            className="hidden" 
+                                            accept=".json"
+                                            onChange={(e) => {
+                                                const file = e.target.files[0];
+                                                if(!file) return;
+                                                const reader = new FileReader();
+                                                reader.onload = (ev) => {
+                                                    try {
+                                                        const json = JSON.parse(ev.target.result);
+                                                        // Merge logic: Add if ID doesn't exist
+                                                        const newCourses = [...courses];
+                                                        const toAdd = Array.isArray(json) ? json : (json.modules ? [json] : []);
+                                                        toAdd.forEach(c => {
+                                                            if (!c.id) return;
+                                                            const idx = newCourses.findIndex(ex => ex.id === c.id);
+                                                            if (idx === -1) newCourses.push(c);
+                                                            else newCourses[idx] = c; // Update existing
+                                                        });
+                                                        setCourses(newCourses);
+                                                        alert("Courses Imported Successfully!");
+                                                    } catch(err) { alert("Invalid File"); }
+                                                    e.target.value = '';
+                                                };
+                                                reader.readAsText(file);
+                                            }}
+                                        />
+                                    </div>
                                     {visibleCourses.map(c => (
                                         <button key={c.id} onClick={() => setActiveCourseId(c.id)} className="w-full text-left p-3 rounded-lg hover:bg-slate-100 mb-1 flex items-center gap-2 transition-colors">
                                             <div className="bg-blue-100 text-blue-600 p-1.5 rounded-md"><I n="BookOpen" size={16}/></div>
                                             <span className="text-sm font-medium truncate">{c.title}</span>
                                         </button>
                                     ))}
-                                    {visibleCourses.length === 0 && <div className="p-4 text-sm text-slate-500 text-center">No courses assigned.</div>}
+                                    {visibleCourses.length === 0 && <div className="p-4 text-sm text-slate-500 text-center">No courses. Import a JSON file to start.</div>}
                                 </div>
                             ) : (
                                 <>
                                     <button onClick={() => { setActiveCourseId(null); setActiveModuleId(null); }} className="w-full text-left p-3 rounded-lg hover:bg-slate-100 flex gap-2 text-sm font-medium"><I n="ArrowLeft" size={16}/> Back to Courses</button>
                                     <div className="px-3 py-2 font-bold text-slate-800 text-sm truncate">{activeCourse.title}</div>
                                     {activeCourse.modules.map(m => {
-                                        // V8: Check Completion Status
                                         const isCompleted = history.some(h => h.course === activeCourse.title && h.module === m.title && (h.score / h.total) >= 0.7);
                                         return (
-                                            <button key={m.id} onClick={() => { setActiveModuleId(m.id); if(canStudy) startModule('study'); else if(canQuiz) startModule('quiz'); }} className={`w-full text-left p-3 rounded-lg text-sm mb-1 flex items-center justify-between gap-2 ${activeModuleId === m.id ? 'bg-blue-600 text-white' : 'hover:bg-slate-100'}`}>
+                                            <button key={m.id} onClick={() => { setActiveModuleId(m.id); startModule('study'); }} className={`w-full text-left p-3 rounded-lg text-sm mb-1 flex items-center justify-between gap-2 ${activeModuleId === m.id ? 'bg-blue-600 text-white' : 'hover:bg-slate-100'}`}>
                                                 <div className="flex items-center gap-2 overflow-hidden">
                                                     <span className="opacity-50 text-xs shrink-0">{m.id}</span>
                                                     <span className="truncate">{m.title.replace(/^Module \d+: /, '')}</span>
@@ -883,7 +848,7 @@ Structure Requirements:
                                                 <p className="text-sm text-slate-500 mb-4">{c.description}</p>
                                                 <span className="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded">{c.modules ? c.modules.length : 0} Modules</span>
                                             </div>
-                                        )) : <div className="col-span-full text-center py-10 text-slate-500">No courses assigned to you. Contact Admin.</div>}
+                                        )) : <div className="col-span-full text-center py-10 text-slate-500">No courses loaded. Use the Import button in the sidebar.</div>}
                                     </div>
                                     <div className="mt-12 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                                         <div className="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
@@ -908,30 +873,20 @@ Structure Requirements:
                                     {activeCourse.modules.length === 0 && <div className="text-red-500 bg-red-50 p-4 rounded inline-block">This course has no modules yet.<br/>Ask Admin to import content.</div>}
                                     <div className="inline-flex flex-col gap-4 mt-6 items-center">
                                         <div className="flex gap-4">
-                                            {canStudy && (
-                                                <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg w-40 text-sm">
-                                                    <div className="font-bold text-blue-700 mb-1">Study Mode</div>Review answers
-                                                </div>
-                                            )}
-                                            {canQuiz && (
-                                                <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-lg w-40 text-sm">
-                                                    <div className="font-bold text-emerald-700 mb-1">Quiz Mode</div>Timed Test
-                                                </div>
-                                            )}
+                                            <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg w-40 text-sm">
+                                                <div className="font-bold text-blue-700 mb-1">Study Mode</div>Review answers
+                                            </div>
+                                            <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-lg w-40 text-sm">
+                                                <div className="font-bold text-emerald-700 mb-1">Quiz Mode</div>
+                                                {perms.canQuiz ? "Timed Test" : <span className="text-red-500 flex items-center justify-center gap-1"><I n="Lock" size={12}/> Locked</span>}
+                                            </div>
                                         </div>
                                         
-                                        {/* V8: Request Quiz Button */}
-                                        {!canQuiz && canStudy && (
+                                        {!perms.canQuiz && (
                                             <div className="mt-4">
-                                                <button onClick={requestQuizAccess} className={`px-6 py-3 rounded-full font-bold shadow transition-all ${user.requests && user.requests.includes(activeCourseId) ? 'bg-slate-200 text-slate-500 cursor-not-allowed' : 'bg-orange-500 text-white hover:bg-orange-600'}`}>
-                                                    {user.requests && user.requests.includes(activeCourseId) ? 'Request Sent (Pending Approval)' : 'Request Quiz Access'}
+                                                <button onClick={() => setUnlockModalCourse(activeCourse)} className="px-6 py-3 rounded-full font-bold shadow transition-all bg-slate-800 text-white hover:bg-slate-900 flex items-center gap-2">
+                                                    <I n="Key" size={16}/> Enter Access Code to Unlock Quiz
                                                 </button>
-                                            </div>
-                                        )}
-                                        
-                                        {!canStudy && !canQuiz && (
-                                            <div className="p-4 bg-red-50 border border-red-100 rounded-lg text-sm text-red-600">
-                                                No access modes enabled. Contact Admin.
                                             </div>
                                         )}
                                     </div>
@@ -947,11 +902,11 @@ Structure Requirements:
                                                 <div className={`px-3 py-1 rounded font-mono text-sm flex items-center gap-2 ${timer < 60 ? 'bg-red-100 text-red-700 font-bold' : 'bg-slate-900 text-white'}`}><I n="Clock" size={14}/> {formatTime(timer)}</div>
                                             )}
                                             <div className="bg-white border rounded p-1 flex">
-                                                {canStudy && (
-                                                    <button onClick={() => startModule('study')} className={`px-3 py-1 rounded text-sm font-medium ${viewMode==='study'?'bg-blue-100 text-blue-700':'text-slate-500'}`}>Study</button>
-                                                )}
-                                                {canQuiz && (
+                                                <button onClick={() => startModule('study')} className={`px-3 py-1 rounded text-sm font-medium ${viewMode==='study'?'bg-blue-100 text-blue-700':'text-slate-500'}`}>Study</button>
+                                                {perms.canQuiz ? (
                                                     <button onClick={() => startModule('quiz')} className={`px-3 py-1 rounded text-sm font-medium ${viewMode==='quiz'?'bg-emerald-100 text-emerald-700':'text-slate-500'}`}>Quiz</button>
+                                                ) : (
+                                                    <button onClick={() => setUnlockModalCourse(activeCourse)} className="px-3 py-1 rounded text-sm font-medium text-slate-400 flex items-center gap-1"><I n="Lock" size={12}/> Quiz</button>
                                                 )}
                                             </div>
                                         </div>
@@ -1017,28 +972,37 @@ Structure Requirements:
             );
         };
 
-        const LoginScreen = ({ onLogin }) => {
+        const LoginScreen = ({ onLogin, onSignup }) => {
+            const [mode, setMode] = useState('login'); // login or signup
             const [name, setName] = useState("");
             const [pass, setPass] = useState("");
-            const [showPass, setShowPass] = useState(false);
-            const checkAdmin = (e) => {
-                const val = e.target.value; setName(val);
-                if (val.toLowerCase() === 'admin') setShowPass(true); else setShowPass(false);
+            
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (mode === 'login') onLogin(name, pass);
+                else onSignup(name);
             };
+
             return (
                 <div className="flex h-screen items-center justify-center bg-slate-100 p-4">
                     <div className="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full border border-slate-200">
                         <div className="flex justify-center mb-4 text-blue-600"><div className="p-3 bg-blue-50 rounded-full"><I n="User" size={32}/></div></div>
-                        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
-                        <form onSubmit={(e) => { e.preventDefault(); onLogin(name, pass); }} className="space-y-4">
-                            <div><label className="text-xs font-bold text-slate-500 uppercase">Username</label><input value={name} onChange={checkAdmin} className="w-full p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter name" required /></div>
-                            {showPass && (<div className="animate-fade-in"><label className="text-xs font-bold text-slate-500 uppercase">Password</label><input type="password" value={pass} onChange={e => setPass(e.target.value)} className="w-full p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter password" /></div>)}
-                            <button className="w-full bg-blue-600 text-white py-3 rounded font-bold hover:bg-blue-700">Enter</button>
+                        <h2 className="text-2xl font-bold text-center mb-2">{mode === 'login' ? 'Login' : 'Create Account'}</h2>
+                        
+                        <div className="flex bg-slate-100 p-1 rounded-lg mb-6">
+                            <button onClick={() => setMode('login')} className={`flex-1 py-1 text-sm font-bold rounded-md transition-colors ${mode === 'login' ? 'bg-white shadow text-slate-800' : 'text-slate-400'}`}>Login</button>
+                            <button onClick={() => setMode('signup')} className={`flex-1 py-1 text-sm font-bold rounded-md transition-colors ${mode === 'signup' ? 'bg-white shadow text-slate-800' : 'text-slate-400'}`}>Sign Up</button>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div><label className="text-xs font-bold text-slate-500 uppercase">Username</label><input value={name} onChange={e => setName(e.target.value)} className="w-full p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter name" required /></div>
+                            
+                            {mode === 'login' && name.toLowerCase() === 'admin' && (
+                                <div className="animate-fade-in"><label className="text-xs font-bold text-slate-500 uppercase">Password</label><input type="password" value={pass} onChange={e => setPass(e.target.value)} className="w-full p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter password" /></div>
+                            )}
+                            
+                            <button className="w-full bg-blue-600 text-white py-3 rounded font-bold hover:bg-blue-700">{mode === 'login' ? 'Enter App' : 'Create Account'}</button>
                         </form>
-                        <p className="text-xs text-center text-slate-400 mt-4">Ask Admin to create your account.</p>
-                    </div>
-                    <div className="fixed bottom-4 right-4 text-xs text-slate-400">
-                        &copy; {new Date().getFullYear()} Ramprasad NS
                     </div>
                 </div>
             );
