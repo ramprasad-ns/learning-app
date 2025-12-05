@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expert Prep App & Admin v11</title>
+    <title>Expert Prep App & Admin v14</title>
     
     <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -59,6 +59,7 @@
             History: <path d="M12 20v-6M6 20V10M18 20V4"/>,
             Library: <g><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></g>,
             Lock: <g><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g>,
+            LockOpen: <g><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></g>,
             Trash: <g><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></g>,
             Plus: <g><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></g>,
             UpdateDoc: <g><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></g>,
@@ -66,6 +67,7 @@
             Refresh: <g><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></g>,
             Clock: <g><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></g>,
             Eye: <g><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></g>,
+            EyeOff: <g><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></g>,
             UserPlus: <g><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></g>,
             AlertCircle: <g><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></g>,
             FilePlus: <g><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></g>,
@@ -73,7 +75,8 @@
             Check: <g><polyline points="20 6 9 17 4 12"/></g>,
             HelpCircle: <g><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></g>,
             Copy: <g><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></g>,
-            Key: <g><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></g>
+            Key: <g><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></g>,
+            Cloud: <g><path d="M17.5 19c0-3.037-2.463-5.5-5.5-5.5S6.5 15.963 6.5 19"/><path d="M17.5 19H19a5 5 0 0 0 5-5c0-2.08-.8-4.083-2.1-5.1"/><path d="M6.5 19H5a5 5 0 0 1-5-5c0-2.65 2-5 4.9-5.1"/><path d="M12 13.5V2"/></g>
         };
 
         const I = (props) => <Icon path={Icons[props.n]} {...props} />;
@@ -82,9 +85,10 @@
         const LS_COURSES = 'app_courses';
         const LS_USERS = 'app_users';
         const LS_ACTIVE_USER = 'active_user';
+        const LS_GH_URL = 'gh_sync_url';
         const TIME_PER_QUESTION = 60; // 1 Minute per question
 
-        const sampleCourses = [{ id: "ajo-sample", title: "Adobe Journey Optimizer", description: "Expert Certification Prep (Default)", code: "", modules: [{ id: 1, title: "Module 01: Basics", questions: [{ id: 101, question: "What is AJO?", options: ["CMS", "Journey Tool", "Email Client", "Game"], answer: 1, explanation: "It orchestrates journeys." }] }] }];
+        const sampleCourses = [{ id: "ajo-sample", title: "Adobe Journey Optimizer", description: "Expert Certification Prep (Default)", code: "", hidden: false, modules: [{ id: 1, title: "Module 01: Basics", questions: [{ id: 101, question: "What is AJO?", options: ["CMS", "Journey Tool", "Email Client", "Game"], answer: 1, explanation: "It orchestrates journeys." }] }] }];
 
         // --- UTILS ---
         const formatTime = (seconds) => {
@@ -127,6 +131,45 @@
             </div>
         );
 
+        const LoginScreen = ({ onLogin, onSignup }) => {
+            const [mode, setMode] = useState('login'); // login or signup
+            const [name, setName] = useState("");
+            const [pass, setPass] = useState("");
+            
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (mode === 'login') onLogin(name, pass);
+                else onSignup(name);
+            };
+
+            return (
+                <div className="flex h-screen items-center justify-center bg-slate-100 p-4">
+                    <div className="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full border border-slate-200">
+                        <div className="flex justify-center mb-4 text-blue-600"><div className="p-3 bg-blue-50 rounded-full"><I n="User" size={32}/></div></div>
+                        <h2 className="text-2xl font-bold text-center mb-2">{mode === 'login' ? 'Login' : 'Create Account'}</h2>
+                        
+                        <div className="flex bg-slate-100 p-1 rounded-lg mb-6">
+                            <button onClick={() => setMode('login')} className={`flex-1 py-1 text-sm font-bold rounded-md transition-colors ${mode === 'login' ? 'bg-white shadow text-slate-800' : 'text-slate-400'}`}>Login</button>
+                            <button onClick={() => setMode('signup')} className={`flex-1 py-1 text-sm font-bold rounded-md transition-colors ${mode === 'signup' ? 'bg-white shadow text-slate-800' : 'text-slate-400'}`}>Sign Up</button>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div><label className="text-xs font-bold text-slate-500 uppercase">Username</label><input value={name} onChange={e => setName(e.target.value)} className="w-full p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter name" required /></div>
+                            
+                            {mode === 'login' && name.toLowerCase() === 'admin' && (
+                                <div className="animate-fade-in"><label className="text-xs font-bold text-slate-500 uppercase">Password</label><input type="password" value={pass} onChange={e => setPass(e.target.value)} className="w-full p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter password" /></div>
+                            )}
+                            
+                            <button className="w-full bg-blue-600 text-white py-3 rounded font-bold hover:bg-blue-700">{mode === 'login' ? 'Enter App' : 'Create Account'}</button>
+                        </form>
+                    </div>
+                    <div className="fixed bottom-4 right-4 text-xs text-slate-400">
+                        &copy; {new Date().getFullYear()} Ramprasad NS. All rights reserved.
+                    </div>
+                </div>
+            );
+        };
+
         // --- ADMIN COMPONENT ---
         const AdminPanel = ({ courses, setCourses, users, setUsers, onLogout }) => {
             const [activeTab, setActiveTab] = useState('courses');
@@ -144,8 +187,9 @@
 
             const [notification, setNotification] = useState(null);
             const [viewingCourse, setViewingCourse] = useState(null);
-            const [assigningCourse, setAssigningCourse] = useState(null);
             const [showPromptModal, setShowPromptModal] = useState(false);
+            const [showSyncModal, setShowSyncModal] = useState(false);
+            const [ghUrl, setGhUrl] = useState(localStorage.getItem(LS_GH_URL) || '');
 
             const notify = (msg, type = 'success') => setNotification({ message: msg, type });
 
@@ -157,36 +201,39 @@
                 reader.onload = (ev) => {
                     try {
                         const json = JSON.parse(ev.target.result);
-                        if (Array.isArray(json)) {
-                            const isModuleList = json.length > 0 && json[0].questions && !json[0].modules;
-                            
-                            if (isModuleList) {
-                                const newCourse = {
-                                    id: "imported-course-" + Date.now(),
-                                    title: "Imported Course (" + new Date().toLocaleDateString() + ")",
-                                    description: "Automatically created from bulk module import.",
-                                    modules: json
-                                };
-                                setCourses([...courses, newCourse]);
-                                notify(`Detected Module List. Wrapped into new course: "${newCourse.title}".`);
-                            } else {
-                                const newCourses = [...courses];
-                                json.forEach(c => {
-                                    if(!c.modules) return; 
-                                    const idx = newCourses.findIndex(ex => ex.id === c.id);
-                                    if (idx >= 0) newCourses[idx] = c;
-                                    else newCourses.push(c);
-                                });
-                                setCourses(newCourses);
-                                notify(`Success! ${json.length} courses processed.`);
-                            }
-                        } else {
-                             notify("Invalid format. File must be an ARRAY.", "error");
-                        }
+                        processImportJson(json);
                     } catch(err) { notify("JSON Error: Check file format.", "error"); }
                 };
                 reader.readAsText(file);
                 e.target.value = '';
+            };
+
+            const processImportJson = (json) => {
+                if (Array.isArray(json)) {
+                    const isModuleList = json.length > 0 && json[0].questions && !json[0].modules;
+                    if (isModuleList) {
+                        const newCourse = {
+                            id: "imported-course-" + Date.now(),
+                            title: "Imported Course (" + new Date().toLocaleDateString() + ")",
+                            description: "Automatically created from bulk module import.",
+                            modules: json
+                        };
+                        setCourses([...courses, newCourse]);
+                        notify(`Detected Module List. Wrapped into new course: "${newCourse.title}".`);
+                    } else {
+                        const newCourses = [...courses];
+                        json.forEach(c => {
+                            if(!c.modules) return; 
+                            const idx = newCourses.findIndex(ex => ex.id === c.id);
+                            if (idx >= 0) newCourses[idx] = c;
+                            else newCourses.push(c);
+                        });
+                        setCourses(newCourses);
+                        notify(`Success! ${json.length} courses processed.`);
+                    }
+                } else {
+                     notify("Invalid format. File must be an ARRAY.", "error");
+                }
             };
 
             const triggerSingleImport = (id) => {
@@ -282,17 +329,17 @@
                 e.preventDefault();
                 if(!newCourseId.trim() || !newCourseTitle.trim()) return;
                 if(courses.find(c => c.id === newCourseId)) { notify("Course ID already exists.", "error"); return; }
-                const newCourse = { id: newCourseId.trim(), title: newCourseTitle.trim(), description: newCourseDesc.trim(), modules: [] };
+                const newCourse = { id: newCourseId.trim(), title: newCourseTitle.trim(), description: newCourseDesc.trim(), modules: [], hidden: false };
                 setCourses([...courses, newCourse]);
                 setNewCourseId(''); setNewCourseTitle(''); setNewCourseDesc('');
                 notify("New course created! Upload JSON to add content.");
             };
 
-            const updateCourseCode = (cId, code) => {
+            const updateCourseField = (cId, field, val) => {
                 const newCourses = [...courses];
                 const idx = newCourses.findIndex(c => c.id === cId);
                 if (idx !== -1) {
-                    newCourses[idx].code = code;
+                    newCourses[idx][field] = val;
                     setCourses(newCourses);
                 }
             };
@@ -307,7 +354,7 @@
             const addUser = (e) => {
                 e.preventDefault();
                 if (newUserName.trim()) { 
-                    setUsers([...users, { name: newUserName.trim(), access: [] }]); 
+                    setUsers([...users, { name: newUserName.trim(), unlockedCourses: [] }]); 
                     setNewUserName('');
                     notify("User added successfully.");
                 }
@@ -315,12 +362,24 @@
 
             const deleteUser = (idx) => { if (confirm("Delete user?")) { const newU = [...users]; newU.splice(idx, 1); setUsers(newU); notify("User removed."); } };
 
+            const handleGithubPull = async () => {
+                if(!ghUrl) return alert("Please enter the Raw GitHub URL.");
+                try {
+                    const res = await fetch(ghUrl);
+                    if(!res.ok) throw new Error("Failed to fetch");
+                    const json = await res.json();
+                    processImportJson(json);
+                    localStorage.setItem(LS_GH_URL, ghUrl); 
+                    setShowSyncModal(false);
+                } catch(err) {
+                    alert("Sync Error: " + err.message + ". Check if the URL is a valid Raw JSON link.");
+                }
+            };
+
             return (
                 <div className="flex h-screen bg-slate-100 overflow-hidden">
-                    {/* NOTIFICATION TOAST */}
                     {notification && <Notification message={notification.message} type={notification.type} onClose={() => setNotification(null)} />}
 
-                    {/* MODAL: AI PROMPT HELPER */}
                     {showPromptModal && (
                         <Modal title="AI Content Generation Prompt" onClose={() => setShowPromptModal(false)}>
                             <div className="space-y-4">
@@ -379,7 +438,31 @@ Structure Requirements:
                         </Modal>
                     )}
 
-                    {/* MODAL: VIEW COURSE CONTENT */}
+                    {showSyncModal && (
+                        <Modal title="GitHub Cloud Sync" onClose={() => setShowSyncModal(false)}>
+                            <div className="space-y-6">
+                                <div>
+                                    <h4 className="font-bold text-slate-800 flex items-center gap-2 mb-2"><I n="Cloud" size={20}/> Pull from GitHub</h4>
+                                    <p className="text-sm text-slate-500 mb-3">Paste the <strong>Raw JSON URL</strong> of your course file to instantly update the app content.</p>
+                                    <input 
+                                        value={ghUrl} 
+                                        onChange={(e) => setGhUrl(e.target.value)} 
+                                        placeholder="https://raw.githubusercontent.com/user/repo/main/data.json" 
+                                        className="w-full p-2 border rounded mb-2 text-sm"
+                                    />
+                                    <button onClick={handleGithubPull} className="w-full bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700">Pull Data</button>
+                                </div>
+                                <hr className="border-slate-200"/>
+                                <div>
+                                    <h4 className="font-bold text-slate-800 flex items-center gap-2 mb-2"><I n="Upload" size={20}/> Push to GitHub</h4>
+                                    <p className="text-sm text-slate-500 mb-3">To update the source file on GitHub, you must upload the JSON manually.</p>
+                                    <button onClick={exportData} className="w-full bg-slate-100 text-slate-700 border border-slate-300 py-2 rounded font-bold hover:bg-slate-200 mb-2">1. Download Backup JSON</button>
+                                    <a href="https://github.com/login" target="_blank" className="block w-full bg-slate-800 text-white text-center py-2 rounded font-bold hover:bg-slate-900">2. Go to GitHub to Upload</a>
+                                </div>
+                            </div>
+                        </Modal>
+                    )}
+
                     {viewingCourse && (
                         <Modal title={`Inspect: ${viewingCourse.title}`} onClose={() => setViewingCourse(null)}>
                             <div className="space-y-4">
@@ -440,9 +523,10 @@ Structure Requirements:
                                         <p className="text-slate-500 text-sm">Create, edit, or remove courses.</p>
                                     </div>
                                     <div className="flex gap-2">
+                                        <button onClick={() => setShowSyncModal(true)} className="bg-slate-800 text-white px-4 py-2 rounded shadow hover:bg-slate-900 flex items-center gap-2 text-sm font-medium transition-colors"><I n="Cloud" size={16}/> GitHub Sync</button>
                                         <button onClick={() => setShowPromptModal(true)} className="bg-purple-600 text-white px-4 py-2 rounded shadow hover:bg-purple-700 flex items-center gap-2 text-sm font-medium transition-colors"><I n="HelpCircle" size={16}/> AI Prompt</button>
                                         <button onClick={exportData} className="bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded shadow-sm hover:bg-slate-50 flex items-center gap-2 text-sm font-medium transition-colors"><I n="Download" size={16}/> Backup</button>
-                                        <button onClick={() => bulkInputRef.current.click()} className="bg-slate-800 text-white px-4 py-2 rounded shadow hover:bg-slate-900 flex items-center gap-2 text-sm font-medium transition-colors"><I n="Upload" size={16}/> Import</button>
+                                        <button onClick={() => bulkInputRef.current.click()} className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 flex items-center gap-2 text-sm font-medium transition-colors"><I n="Upload" size={16}/> Import</button>
                                     </div>
                                 </div>
 
@@ -458,24 +542,38 @@ Structure Requirements:
 
                                 <div className="grid gap-4">
                                     {courses.map(c => (
-                                        <div key={c.id} className="bg-white p-4 rounded-lg shadow-sm border border-slate-200 flex justify-between items-center hover:border-blue-300 transition-colors">
+                                        <div key={c.id} className="bg-white p-4 rounded-lg shadow-sm border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center hover:border-blue-300 transition-colors gap-4">
                                             <div>
-                                                <h3 className="font-bold text-lg">{c.title}</h3>
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <h3 className="font-bold text-lg">{c.title}</h3>
+                                                    {c.hidden && <span className="bg-slate-100 text-slate-500 text-xs px-2 py-0.5 rounded flex items-center gap-1 border border-slate-200"><I n="EyeOff" size={12}/> Hidden</span>}
+                                                </div>
                                                 <div className="flex items-center gap-4 text-sm text-slate-500 mb-2">
                                                     <span>ID: <code className="bg-slate-100 px-1 rounded text-xs">{c.id}</code></span>
                                                     <span className="flex items-center gap-1"><I n="Library" size={14}/> {c.modules ? c.modules.length : 0} Modules</span>
                                                 </div>
-                                                <div className="flex items-center gap-2 text-xs">
-                                                    <I n="Key" size={14} className="text-slate-400"/>
-                                                    <input 
-                                                        value={c.code || ''} 
-                                                        onChange={(e) => updateCourseCode(c.id, e.target.value)} 
-                                                        placeholder="Set Access Code (Optional)" 
-                                                        className="border-b border-slate-200 focus:border-blue-500 outline-none text-slate-600 w-40 bg-transparent"
-                                                    />
+                                                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center text-xs">
+                                                    <div className="flex items-center gap-2">
+                                                        <I n="Key" size={14} className="text-slate-400"/>
+                                                        <input 
+                                                            value={c.code || ''} 
+                                                            onChange={(e) => updateCourseField(c.id, 'code', e.target.value)} 
+                                                            placeholder="Set Access Code" 
+                                                            className="border-b border-slate-200 focus:border-blue-500 outline-none text-slate-600 w-32 bg-transparent"
+                                                        />
+                                                    </div>
+                                                    <label className="flex items-center gap-2 cursor-pointer text-slate-500 hover:text-slate-700">
+                                                        <input 
+                                                            type="checkbox" 
+                                                            checked={c.hidden || false} 
+                                                            onChange={(e) => updateCourseField(c.id, 'hidden', e.target.checked)} 
+                                                            className="accent-slate-600"
+                                                        />
+                                                        <span>Hide from List</span>
+                                                    </label>
                                                 </div>
                                             </div>
-                                            <div className="flex gap-2 items-center">
+                                            <div className="flex gap-2 items-center self-end sm:self-center">
                                                 <button onClick={() => setViewingCourse(c)} className="text-slate-600 hover:bg-slate-100 p-2 rounded-full" title="Inspect Content"><I n="Eye"/></button>
                                                 <div className="w-px h-6 bg-slate-200 mx-1"></div>
                                                 <button onClick={() => triggerSingleImport(c.id)} className="text-blue-600 hover:bg-blue-50 px-3 py-1 rounded flex items-center gap-2 text-sm border border-blue-200" title="Update JSON for this course"><I n="UpdateDoc" size={16}/> Update</button>
@@ -491,7 +589,7 @@ Structure Requirements:
                         {activeTab === 'users' && (
                             <div className="max-w-4xl mx-auto space-y-8">
                                 <h2 className="text-2xl font-bold text-slate-800 mb-6">Registered Users</h2>
-                                <p className="text-sm text-slate-500 mb-6">These accounts are stored locally on this device. When sharing the app, students will create their own local accounts.</p>
+                                <p className="text-sm text-slate-500 mb-6">These accounts are stored locally on this device.</p>
                                 <div className="space-y-6">
                                     {users.map((u, idx) => (
                                         <div key={idx} className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center">
@@ -535,17 +633,17 @@ Structure Requirements:
             const [timer, setTimer] = useState(0);
             const [timeSpent, setTimeSpent] = useState(0);
             const [timerActive, setTimerActive] = useState(false);
-            
-            // V11: Unlock Modal State
-            const [unlockModalCourse, setUnlockModalCourse] = useState(null);
             const [unlockCodeInput, setUnlockCodeInput] = useState("");
+            
+            // v14: Redeem Modal State
+            const [showRedeemModal, setShowRedeemModal] = useState(false);
+            const [redeemCodeInput, setRedeemCodeInput] = useState("");
 
             useEffect(() => {
                 try {
                     const loadedCourses = JSON.parse(localStorage.getItem(LS_COURSES)) || sampleCourses;
                     let loadedUsers = JSON.parse(localStorage.getItem(LS_USERS)) || [];
                     if (!Array.isArray(loadedUsers)) loadedUsers = [];
-                    
                     setCourses(loadedCourses);
                     setUsers(loadedUsers);
 
@@ -558,7 +656,6 @@ Structure Requirements:
                         }
                     }
                 } catch (e) {
-                    console.error("Data Corruption Error:", e);
                     setCourses(sampleCourses);
                     setUsers([]);
                 }
@@ -588,41 +685,45 @@ Structure Requirements:
                 return () => clearInterval(interval);
             }, [timerActive, score, activeModule, timeSpent]); 
 
-            const visibleCourses = courses; // Everyone can see all imported courses
+            // v14: Visibility Logic (Filter out hidden courses UNLESS unlocked)
+            const isCourseUnlocked = (cId) => {
+                if(isAdmin) return true;
+                const c = courses.find(c => c.id === cId);
+                // If course has code, must be in unlocked list
+                if (c?.code && (!user?.unlockedCourses || !user.unlockedCourses.includes(cId))) return false;
+                return true; 
+            };
+
+            const visibleCourses = courses.filter(c => {
+                if (isAdmin) return true;
+                // If NOT hidden, show it (even if locked)
+                if (!c.hidden) return true;
+                // If Hidden, ONLY show if user has unlocked it
+                return user?.unlockedCourses && user.unlockedCourses.includes(c.id);
+            });
 
             const activeCourse = courses.find(c => c.id === activeCourseId);
             const activeModule = activeCourse?.modules.find(m => m.id === activeModuleId);
             const currentQuestion = activeModule?.questions[currentQuestionIndex];
 
-            // V11: Permission Logic (Local)
-            const getPermissions = (cId) => {
-                if (isAdmin) return { canStudy: true, canQuiz: true };
-                // By default, everyone has STUDY access to imported courses
-                // Quiz access depends on if course has a code, and if user has entered it
-                const course = courses.find(c => c.id === cId);
-                const userAccess = user?.unlockedCourses || [];
+            const unlockCourse = (inputCode) => {
+                // v14: Unlock Logic (also used for Redeem)
+                const targetCourse = activeCourse || courses.find(c => c.code && c.code.toLowerCase() === inputCode.trim().toLowerCase());
                 
-                const canStudy = true;
-                const canQuiz = !course?.code || userAccess.includes(cId);
-                
-                return { canStudy, canQuiz };
-            };
-
-            const unlockQuiz = () => {
-                if (unlockCodeInput === unlockModalCourse.code) {
-                    // Success
+                if (targetCourse && inputCode.trim().toLowerCase() === targetCourse.code.toLowerCase()) {
                     const updatedUsers = users.map(u => {
                         if (u.name === user.name) {
                             const unlocked = u.unlockedCourses || [];
-                            return { ...u, unlockedCourses: [...unlocked, unlockModalCourse.id] };
+                            if (!unlocked.includes(targetCourse.id)) return { ...u, unlockedCourses: [...unlocked, targetCourse.id] };
                         }
                         return u;
                     });
                     setUsers(updatedUsers);
                     setUser(updatedUsers.find(u => u.name === user.name));
-                    setUnlockModalCourse(null);
                     setUnlockCodeInput("");
-                    alert("Access Granted! Quiz Mode Unlocked.");
+                    setRedeemCodeInput("");
+                    setShowRedeemModal(false);
+                    alert(`Course "${targetCourse.title}" Unlocked!`);
                 } else {
                     alert("Incorrect Access Code.");
                 }
@@ -686,9 +787,9 @@ Structure Requirements:
             };
 
             const startModule = (mode) => {
-                const perms = getPermissions(activeCourseId);
-                if (mode === 'quiz' && !perms.canQuiz) { 
-                    setUnlockModalCourse(activeCourse); // Open Unlock Modal
+                const unlocked = isCourseUnlocked(activeCourseId);
+                if (mode === 'quiz' && !unlocked) { 
+                    // Should be handled by UI view logic but double check
                     return; 
                 }
 
@@ -729,22 +830,22 @@ Structure Requirements:
             if (isAdmin) return <AdminPanel courses={courses} setCourses={setCourses} users={users} setUsers={setUsers} onLogout={logout} />;
 
             const progress = activeModule ? ((currentQuestionIndex + (showResult ? 1 : 0)) / activeModule.questions.length) * 100 : 0;
-            const perms = activeCourseId ? getPermissions(activeCourseId) : {};
+            const isLocked = activeCourseId ? !isCourseUnlocked(activeCourseId) : false;
 
             return (
                 <div className="flex h-screen bg-slate-50 font-sans text-slate-800 overflow-hidden">
-                    {/* UNLOCK MODAL */}
-                    {unlockModalCourse && (
-                        <Modal title="Unlock Quiz Access" onClose={() => setUnlockModalCourse(null)}>
+                    {/* REDEEM MODAL */}
+                    {showRedeemModal && (
+                        <Modal title="Redeem Course Access" onClose={() => setShowRedeemModal(false)}>
                             <div className="space-y-4">
-                                <p className="text-sm text-slate-600">The Quiz Mode for <strong>{unlockModalCourse.title}</strong> is protected. Please enter the access code provided by your instructor.</p>
+                                <p className="text-sm text-slate-600">Enter the access code provided by your instructor to reveal and unlock your course.</p>
                                 <input 
-                                    value={unlockCodeInput} 
-                                    onChange={(e) => setUnlockCodeInput(e.target.value)} 
+                                    value={redeemCodeInput} 
+                                    onChange={(e) => setRedeemCodeInput(e.target.value)} 
                                     placeholder="Enter Access Code" 
                                     className="w-full p-3 border rounded font-mono text-center tracking-widest text-lg uppercase"
                                 />
-                                <button onClick={unlockQuiz} className="w-full bg-emerald-600 text-white py-3 rounded font-bold hover:bg-emerald-700">Unlock</button>
+                                <button onClick={() => unlockCourse(redeemCodeInput)} className="w-full bg-blue-600 text-white py-3 rounded font-bold hover:bg-blue-700">Verify & Add Course</button>
                             </div>
                         </Modal>
                     )}
@@ -758,70 +859,76 @@ Structure Requirements:
                             <button onClick={() => setSidebarOpen(false)} className="md:hidden absolute top-5 right-5 text-white"><I n="X"/></button>
                         </div>
                         <div className="overflow-y-auto flex-1 p-2">
-                            {!activeCourseId ? (
-                                <div>
-                                    <div className="px-3 py-2 text-xs font-bold text-slate-400 uppercase">Available Courses</div>
-                                    <div className="mb-4 px-3">
-                                        <button onClick={() => document.getElementById('student-import').click()} className="w-full py-2 border border-dashed border-slate-300 rounded text-xs text-slate-500 hover:border-blue-500 hover:text-blue-500 flex items-center justify-center gap-2">
-                                            <I n="Upload" size={14}/> Import Course JSON
+                            {/* SIDEBAR NAVIGATION */}
+                            <div className="px-3 py-2 flex justify-between items-center text-xs font-bold text-slate-400 uppercase">
+                                <span>My Courses</span>
+                                <button onClick={() => setShowRedeemModal(true)} className="text-blue-600 hover:text-blue-800 flex items-center gap-1"><I n="Plus" size={12}/> Redeem</button>
+                            </div>
+                            
+                            <div className="mb-4 px-3">
+                                <button onClick={() => document.getElementById('student-import').click()} className="w-full py-2 border border-dashed border-slate-300 rounded text-xs text-slate-500 hover:border-blue-500 hover:text-blue-500 flex items-center justify-center gap-2">
+                                    <I n="Upload" size={14}/> Import Data File
+                                </button>
+                                <input 
+                                    id="student-import" 
+                                    type="file" 
+                                    className="hidden" 
+                                    accept=".json"
+                                    onChange={(e) => {
+                                        const file = e.target.files[0];
+                                        if(!file) return;
+                                        const reader = new FileReader();
+                                        reader.onload = (ev) => {
+                                            try {
+                                                const json = JSON.parse(ev.target.result);
+                                                const newCourses = [...courses];
+                                                const toAdd = Array.isArray(json) ? json : (json.modules ? [json] : []);
+                                                toAdd.forEach(c => {
+                                                    if (!c.id) return;
+                                                    const idx = newCourses.findIndex(ex => ex.id === c.id);
+                                                    if (idx === -1) newCourses.push(c);
+                                                    else newCourses[idx] = c;
+                                                });
+                                                setCourses(newCourses);
+                                                alert("Courses Updated. Use 'Redeem' to unlock hidden content.");
+                                            } catch(err) { alert("Invalid File"); }
+                                            e.target.value = '';
+                                        };
+                                        reader.readAsText(file);
+                                    }}
+                                />
+                            </div>
+
+                            {visibleCourses.map(c => {
+                                const unlocked = isCourseUnlocked(c.id);
+                                const isActive = activeCourseId === c.id;
+                                return (
+                                    <div key={c.id} className="mb-1">
+                                        <button onClick={() => { setActiveCourseId(c.id); setActiveModuleId(null); }} className={`w-full text-left p-3 rounded-lg flex items-center gap-2 transition-colors ${isActive ? 'bg-slate-100' : 'hover:bg-slate-50'}`}>
+                                            <div className={`p-1.5 rounded-md ${isActive ? 'bg-blue-600 text-white' : (unlocked ? 'bg-blue-100 text-blue-600' : 'bg-slate-200 text-slate-500')}`}>
+                                                <I n={unlocked ? 'BookOpen' : 'Lock'} size={16}/>
+                                            </div>
+                                            <span className={`text-sm font-medium truncate flex-1 ${isActive ? 'text-slate-900' : 'text-slate-700'}`}>{c.title}</span>
                                         </button>
-                                        <input 
-                                            id="student-import" 
-                                            type="file" 
-                                            className="hidden" 
-                                            accept=".json"
-                                            onChange={(e) => {
-                                                const file = e.target.files[0];
-                                                if(!file) return;
-                                                const reader = new FileReader();
-                                                reader.onload = (ev) => {
-                                                    try {
-                                                        const json = JSON.parse(ev.target.result);
-                                                        // Merge logic: Add if ID doesn't exist
-                                                        const newCourses = [...courses];
-                                                        const toAdd = Array.isArray(json) ? json : (json.modules ? [json] : []);
-                                                        toAdd.forEach(c => {
-                                                            if (!c.id) return;
-                                                            const idx = newCourses.findIndex(ex => ex.id === c.id);
-                                                            if (idx === -1) newCourses.push(c);
-                                                            else newCourses[idx] = c; // Update existing
-                                                        });
-                                                        setCourses(newCourses);
-                                                        alert("Courses Imported Successfully!");
-                                                    } catch(err) { alert("Invalid File"); }
-                                                    e.target.value = '';
-                                                };
-                                                reader.readAsText(file);
-                                            }}
-                                        />
+                                        
+                                        {/* MODULE LIST (Only show if Active AND Unlocked) */}
+                                        {isActive && unlocked && c.modules && (
+                                            <div className="pl-4 mt-1 space-y-1 border-l-2 border-slate-100 ml-3">
+                                                {c.modules.map(m => {
+                                                    const isCompleted = history.some(h => h.course === c.title && h.module === m.title && (h.score / h.total) >= 0.7);
+                                                    return (
+                                                        <button key={m.id} onClick={() => { setActiveModuleId(m.id); startModule('study'); }} className={`w-full text-left p-2 pl-3 rounded-r-lg text-xs flex items-center justify-between gap-2 ${activeModuleId === m.id ? 'bg-blue-50 text-blue-700 font-bold border-l-2 border-blue-600' : 'text-slate-500 hover:bg-slate-50'}`}>
+                                                            <span className="truncate">{m.title.replace(/^Module \d+: /, '')}</span>
+                                                            {isCompleted && <I n="Check" size={14} className="text-green-500" />}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
                                     </div>
-                                    {visibleCourses.map(c => (
-                                        <button key={c.id} onClick={() => setActiveCourseId(c.id)} className="w-full text-left p-3 rounded-lg hover:bg-slate-100 mb-1 flex items-center gap-2 transition-colors">
-                                            <div className="bg-blue-100 text-blue-600 p-1.5 rounded-md"><I n="BookOpen" size={16}/></div>
-                                            <span className="text-sm font-medium truncate">{c.title}</span>
-                                        </button>
-                                    ))}
-                                    {visibleCourses.length === 0 && <div className="p-4 text-sm text-slate-500 text-center">No courses. Import a JSON file to start.</div>}
-                                </div>
-                            ) : (
-                                <>
-                                    <button onClick={() => { setActiveCourseId(null); setActiveModuleId(null); }} className="w-full text-left p-3 rounded-lg hover:bg-slate-100 flex gap-2 text-sm font-medium"><I n="ArrowLeft" size={16}/> Back to Courses</button>
-                                    <div className="px-3 py-2 font-bold text-slate-800 text-sm truncate">{activeCourse.title}</div>
-                                    {activeCourse.modules.map(m => {
-                                        const isCompleted = history.some(h => h.course === activeCourse.title && h.module === m.title && (h.score / h.total) >= 0.7);
-                                        return (
-                                            <button key={m.id} onClick={() => { setActiveModuleId(m.id); startModule('study'); }} className={`w-full text-left p-3 rounded-lg text-sm mb-1 flex items-center justify-between gap-2 ${activeModuleId === m.id ? 'bg-blue-600 text-white' : 'hover:bg-slate-100'}`}>
-                                                <div className="flex items-center gap-2 overflow-hidden">
-                                                    <span className="opacity-50 text-xs shrink-0">{m.id}</span>
-                                                    <span className="truncate">{m.title.replace(/^Module \d+: /, '')}</span>
-                                                </div>
-                                                {isCompleted && <I n="Check" size={16} className={activeModuleId === m.id ? 'text-white' : 'text-green-600'} />}
-                                            </button>
-                                        );
-                                    })}
-                                    {activeCourse.modules.length === 0 && <div className="p-4 text-xs text-slate-400 text-center">Empty Course (No Modules)</div>}
-                                </>
-                            )}
+                                );
+                            })}
+                            {visibleCourses.length === 0 && <div className="p-4 text-sm text-slate-500 text-center">No visible courses.</div>}
                         </div>
                         <div className="p-2 text-center text-xs text-slate-600 border-t border-slate-200">
                             &copy; {new Date().getFullYear()} Ramprasad NS
@@ -838,62 +945,66 @@ Structure Requirements:
                         <div className="flex-1 overflow-y-auto bg-slate-50 p-6 flex flex-col">
                             <div className="flex-1">
                             {!activeCourseId && (
-                                <div className="max-w-5xl mx-auto animate-fade-in">
-                                    <h2 className="text-2xl font-bold mb-6 flex items-center gap-2"><I n="Library" className="text-blue-600"/> Your Courses</h2>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {visibleCourses.length > 0 ? visibleCourses.map(c => (
-                                            <div key={c.id} onClick={() => setActiveCourseId(c.id)} className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:border-blue-400 cursor-pointer transition-all group">
-                                                <div className="h-12 w-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors"><I n="BookOpen"/></div>
-                                                <h3 className="font-bold text-lg mb-2">{c.title}</h3>
-                                                <p className="text-sm text-slate-500 mb-4">{c.description}</p>
-                                                <span className="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded">{c.modules ? c.modules.length : 0} Modules</span>
-                                            </div>
-                                        )) : <div className="col-span-full text-center py-10 text-slate-500">No courses loaded. Use the Import button in the sidebar.</div>}
-                                    </div>
-                                    <div className="mt-12 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                                        <div className="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-                                            <div className="flex items-center gap-2"><I n="History" size={18}/><h3 className="font-bold">Recent Activity</h3></div>
-                                            {history.length > 0 && <button onClick={clearHistory} className="text-xs text-red-500 hover:underline">Clear History</button>}
-                                        </div>
-                                        <div className="max-h-64 overflow-y-auto">
-                                            {history.length === 0 ? <p className="p-6 text-center text-sm text-slate-500">No history yet.</p> : (
-                                                <table className="w-full text-sm text-left"><thead className="text-xs uppercase bg-slate-50 text-slate-500"><tr><th className="px-6 py-3">Course</th><th className="px-6 py-3">Module</th><th className="px-6 py-3">Score</th><th className="px-6 py-3">Time</th></tr></thead>
-                                                    <tbody>{history.map((h, i) => (<tr key={i} className="border-b border-slate-100"><td className="px-6 py-3 font-medium">{h.course}</td><td className="px-6 py-3">{h.module}</td><td className="px-6 py-3"><span className={`px-2 py-1 rounded text-xs font-bold ${h.score/h.total >= 0.7 ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'}`}>{h.score}/{h.total}</span></td><td className="px-6 py-3 text-xs text-slate-500">{h.time ? formatTime(h.time) : '-'}</td></tr>))}</tbody>
-                                                </table>
-                                            )}
-                                        </div>
+                                <div className="max-w-5xl mx-auto animate-fade-in flex flex-col items-center justify-center h-full text-center">
+                                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 max-w-lg">
+                                        <div className="bg-blue-50 text-blue-600 p-4 rounded-full inline-block mb-4"><I n="BookOpen" size={48}/></div>
+                                        <h2 className="text-2xl font-bold text-slate-800 mb-2">Welcome to Prep App</h2>
+                                        <p className="text-slate-500 mb-6">Select a course to begin.</p>
+                                        <button onClick={() => setShowRedeemModal(true)} className="bg-slate-900 text-white px-6 py-3 rounded-full font-bold hover:bg-slate-800 flex items-center gap-2 mx-auto">
+                                            <I n="Key"/> Redeem Course Code
+                                        </button>
                                     </div>
                                 </div>
                             )}
 
-                            {activeCourseId && !activeModuleId && (
-                                <div className="text-center py-10">
-                                    <h2 className="text-2xl font-bold mb-2">{activeCourse.title}</h2>
-                                    <p className="text-slate-500 mb-8">{activeCourse.description || "Select a module to start."}</p>
-                                    {activeCourse.modules.length === 0 && <div className="text-red-500 bg-red-50 p-4 rounded inline-block">This course has no modules yet.<br/>Ask Admin to import content.</div>}
-                                    <div className="inline-flex flex-col gap-4 mt-6 items-center">
-                                        <div className="flex gap-4">
-                                            <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg w-40 text-sm">
-                                                <div className="font-bold text-blue-700 mb-1">Study Mode</div>Review answers
-                                            </div>
-                                            <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-lg w-40 text-sm">
-                                                <div className="font-bold text-emerald-700 mb-1">Quiz Mode</div>
-                                                {perms.canQuiz ? "Timed Test" : <span className="text-red-500 flex items-center justify-center gap-1"><I n="Lock" size={12}/> Locked</span>}
-                                            </div>
-                                        </div>
+                            {activeCourseId && isLocked && (
+                                <div className="max-w-xl mx-auto animate-fade-in mt-10">
+                                    <div className="bg-white p-10 rounded-2xl shadow-lg border border-slate-200 text-center">
+                                        <div className="bg-slate-100 text-slate-400 p-6 rounded-full inline-block mb-6"><I n="Lock" size={48}/></div>
+                                        <h2 className="text-2xl font-bold text-slate-800 mb-2">{activeCourse.title}</h2>
+                                        <p className="text-slate-500 mb-8">This course is protected. Please enter the Access Code provided by your instructor to view the contents.</p>
                                         
-                                        {!perms.canQuiz && (
-                                            <div className="mt-4">
-                                                <button onClick={() => setUnlockModalCourse(activeCourse)} className="px-6 py-3 rounded-full font-bold shadow transition-all bg-slate-800 text-white hover:bg-slate-900 flex items-center gap-2">
-                                                    <I n="Key" size={16}/> Enter Access Code to Unlock Quiz
-                                                </button>
-                                            </div>
-                                        )}
+                                        <div className="flex gap-2">
+                                            <input 
+                                                value={unlockCodeInput} 
+                                                onChange={(e) => setUnlockCodeInput(e.target.value)} 
+                                                placeholder="Enter Access Code" 
+                                                className="flex-1 p-3 border rounded-lg font-mono text-center tracking-widest text-lg uppercase focus:ring-2 focus:ring-blue-500 outline-none"
+                                            />
+                                            <button onClick={() => unlockCourse(unlockCodeInput)} className="bg-blue-600 text-white px-6 rounded-lg font-bold hover:bg-blue-700">Unlock</button>
+                                        </div>
                                     </div>
                                 </div>
                             )}
 
-                            {activeModuleId && currentQuestion && (
+                            {activeCourseId && !isLocked && !activeModuleId && (
+                                <div className="text-center py-10 animate-fade-in">
+                                    <div className="inline-block p-3 bg-blue-100 text-blue-600 rounded-xl mb-4"><I n="BookOpen" size={32}/></div>
+                                    <h2 className="text-3xl font-bold mb-2 text-slate-800">{activeCourse.title}</h2>
+                                    <p className="text-slate-500 mb-8 max-w-2xl mx-auto">{activeCourse.description || "Select a module from the sidebar to start studying."}</p>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                                        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                                            <div className="text-4xl font-bold text-blue-600 mb-1">{activeCourse.modules.length}</div>
+                                            <div className="text-xs font-bold text-slate-400 uppercase">Modules</div>
+                                        </div>
+                                        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                                            <div className="text-4xl font-bold text-emerald-600 mb-1">
+                                                {activeCourse.modules.reduce((acc, m) => acc + m.questions.length, 0)}
+                                            </div>
+                                            <div className="text-xs font-bold text-slate-400 uppercase">Questions</div>
+                                        </div>
+                                        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                                            <div className="text-4xl font-bold text-purple-600 mb-1">
+                                                {history.filter(h => h.course === activeCourse.title && (h.score/h.total) >= 0.7).length}
+                                            </div>
+                                            <div className="text-xs font-bold text-slate-400 uppercase">Completed</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeModuleId && currentQuestion && !isLocked && (
                                 <div className="max-w-3xl mx-auto animate-fade-in">
                                     <div className="flex justify-between items-center mb-6">
                                         <div><div className="text-xs uppercase text-slate-400 font-bold">Module</div><h2 className="text-xl font-bold">{activeModule.title}</h2></div>
@@ -903,16 +1014,11 @@ Structure Requirements:
                                             )}
                                             <div className="bg-white border rounded p-1 flex">
                                                 <button onClick={() => startModule('study')} className={`px-3 py-1 rounded text-sm font-medium ${viewMode==='study'?'bg-blue-100 text-blue-700':'text-slate-500'}`}>Study</button>
-                                                {perms.canQuiz ? (
-                                                    <button onClick={() => startModule('quiz')} className={`px-3 py-1 rounded text-sm font-medium ${viewMode==='quiz'?'bg-emerald-100 text-emerald-700':'text-slate-500'}`}>Quiz</button>
-                                                ) : (
-                                                    <button onClick={() => setUnlockModalCourse(activeCourse)} className="px-3 py-1 rounded text-sm font-medium text-slate-400 flex items-center gap-1"><I n="Lock" size={12}/> Quiz</button>
-                                                )}
+                                                <button onClick={() => startModule('quiz')} className={`px-3 py-1 rounded text-sm font-medium ${viewMode==='quiz'?'bg-emerald-100 text-emerald-700':'text-slate-500'}`}>Quiz</button>
                                             </div>
                                         </div>
                                     </div>
                                     
-                                    {/* PROGRESS BAR */}
                                     <div className="w-full bg-slate-200 rounded-full h-2 mb-6 overflow-hidden">
                                         <div className="bg-blue-600 h-2 rounded-full progress-bar-transition" style={{ width: `${progress}%` }}></div>
                                     </div>
@@ -967,42 +1073,6 @@ Structure Requirements:
                             </div>
                             <Footer />
                         </div>
-                    </div>
-                </div>
-            );
-        };
-
-        const LoginScreen = ({ onLogin, onSignup }) => {
-            const [mode, setMode] = useState('login'); // login or signup
-            const [name, setName] = useState("");
-            const [pass, setPass] = useState("");
-            
-            const handleSubmit = (e) => {
-                e.preventDefault();
-                if (mode === 'login') onLogin(name, pass);
-                else onSignup(name);
-            };
-
-            return (
-                <div className="flex h-screen items-center justify-center bg-slate-100 p-4">
-                    <div className="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full border border-slate-200">
-                        <div className="flex justify-center mb-4 text-blue-600"><div className="p-3 bg-blue-50 rounded-full"><I n="User" size={32}/></div></div>
-                        <h2 className="text-2xl font-bold text-center mb-2">{mode === 'login' ? 'Login' : 'Create Account'}</h2>
-                        
-                        <div className="flex bg-slate-100 p-1 rounded-lg mb-6">
-                            <button onClick={() => setMode('login')} className={`flex-1 py-1 text-sm font-bold rounded-md transition-colors ${mode === 'login' ? 'bg-white shadow text-slate-800' : 'text-slate-400'}`}>Login</button>
-                            <button onClick={() => setMode('signup')} className={`flex-1 py-1 text-sm font-bold rounded-md transition-colors ${mode === 'signup' ? 'bg-white shadow text-slate-800' : 'text-slate-400'}`}>Sign Up</button>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div><label className="text-xs font-bold text-slate-500 uppercase">Username</label><input value={name} onChange={e => setName(e.target.value)} className="w-full p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter name" required /></div>
-                            
-                            {mode === 'login' && name.toLowerCase() === 'admin' && (
-                                <div className="animate-fade-in"><label className="text-xs font-bold text-slate-500 uppercase">Password</label><input type="password" value={pass} onChange={e => setPass(e.target.value)} className="w-full p-3 border rounded focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter password" /></div>
-                            )}
-                            
-                            <button className="w-full bg-blue-600 text-white py-3 rounded font-bold hover:bg-blue-700">{mode === 'login' ? 'Enter App' : 'Create Account'}</button>
-                        </form>
                     </div>
                 </div>
             );
